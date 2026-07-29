@@ -79,9 +79,12 @@ body {
 }
 .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
 .logo-area { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 36px; height: 36px; border-radius: var(--radius); overflow: hidden; flex-shrink: 0; box-shadow: var(--shadow); }
-.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-mark { height: 36px; border-radius: var(--radius); overflow: hidden; flex-shrink: 0; box-shadow: var(--shadow); }
+.logo-mark img { height: 100%; width: auto; display: block; }
 .logo-text { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); letter-spacing: -0.02em; }
+.logo-sub { font-size: .72rem; color: var(--gray-400); margin-top: 1px; }
+.logo-sub a { color: var(--blue-600); text-decoration: none; }
+.logo-sub a:hover { text-decoration: underline; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .header-badge { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-full); background: var(--green-50); border: 1px solid #bbf7d0; font-size: .75rem; color: var(--green-600); font-weight: 600; }
 .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); animation: pulse 2s ease-in-out infinite; }
@@ -301,7 +304,10 @@ function main() {
             <div class="logo-mark">
                 <img src="${esc(fixImg(meta.siteLogo || '', siteUrl))}" alt="${esc(siteName)}">
             </div>
-            <div class="logo-text">${esc(siteName)}</div>
+            <div>
+                <div class="logo-text">${esc(siteName)}</div>
+                <div class="logo-sub">新商城网址：<a href="https://hltx.eu.cc" target="_blank" rel="noopener">https://hltx.eu.cc</a></div>
+            </div>
         </div>
         <div class="header-actions">
             <div class="header-badge"><div class="pulse-dot"></div>自动发货中</div>
