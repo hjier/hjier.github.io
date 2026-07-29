@@ -1,0 +1,59 @@
+name: Build & Deploy
+
+on:
+  schedule:
+    - cron: '*/25 * * * *'    
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - uses: actions/setup-node@v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Cache build output
+        uses: actions/cache@v4.2.0
+        with:
+          path: dist
+          key: build-${{ github.sha }}
+          restore-keys: build-
+
+      - name: Build
+        env:
+          SITE_URL: https://hltx.cc.cd
+          GITHUB_PAGES_URL: https://${{ github.repository_owner }}.github.io
+        run: |
+          chmod +x build.sh
+          bash build.sh
+          test -f dist/index.html || { echo "ERROR: dist/index.html not found"; exit 1; }
+
+      - name: Check for changes
+        id: changes
+        run: |
+          cp dist/index.html ./index.html
+          if git diff --quiet index.html; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No content changes detected, skipping commit."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Content has changed, will commit."
+          fi
+
+      - name: Commit to main
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          rm -rf dist data
+          git add -A
+          git commit -m "chore: auto rebuild $(date -u '+%Y-%m-%d %H:%M')"
+          git push
